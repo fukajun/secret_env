@@ -3,7 +3,7 @@ require 'secret_env/storage'
 require 'yaml'
 
 module SecretEnv
-  def self.load(env: 'development', secrets_file: 'config/secret_env.yml')
+  def self.load(env: 'development', secrets_file: 'config/secret_env.yml', interval: nil)
     config = YAML.load_file(secrets_file).fetch(env)
 
     storage = Storage.setup(config['storage'])
@@ -16,6 +16,7 @@ module SecretEnv
 
     env_map.each do |key, record|
       unless ENV.has_key?(record.key)
+        sleep(interval) if interval
         ENV[record.key] = record.value
       end
     end
