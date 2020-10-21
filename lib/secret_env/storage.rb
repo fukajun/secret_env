@@ -52,7 +52,11 @@ module SecretEnv
 
     class CredStash < Base
       def retrieve(secret_key)
-        ::CredStash.get(full_key(secret_key))
+        ::CredStash.get(full_key(secret_key), client: kms_client)
+      end
+
+      def kms_client
+        @kms_client ||= Aws::KMS::Client.new
       end
     end
 
